@@ -1,130 +1,140 @@
-Bill_1={a:2000,b:200,c:1000}
-Bill_2={a:1500,b:0,c:0,d:1300}
-Bill_3={b:1000,c:0}
-// Creating the function for generate the Average of each Bill and Returning the Average
-const average=(object)=>{
-    l=[]
-    sum=0
-    avg=0
-    for(i in object){
-        l.push(object[i])
-    }
-    for(i of l){
-        sum=sum+i
-    }
-    avg=sum/l.length
-    return avg
-}
-//Creating the function for generate the Paid amount of the user in each bill and returning the bill
-const paid=(object)=>{
-    avg=average(object)
+// List of Bills
+bills=[bill_1={A:2000,B:200,C:1000},
+    bill_2={A:1500,B:0,C:0,D:1300},
+    bill_3={B:1000,C:0},
+    bill_4={X:400,Y:3000,Z:400},
+    bill_5={E:500,F:700,G:800}]
+//------------------------------------------------------------------------------------
+// Average of each Bill 
+const averageOfEachBill=(object)=>{
+rateList=[] // List of Amount
+sumOfList=0 // For sum of rate list
+average=0
 for(i in object){
-    object[i]=object[i]-avg
+    rateList.push(object[i])
+}
+for(i of rateList){
+    sumOfList=sumOfList+i
+}
+average=sumOfList/rateList.length // calculating average of the bill
+return average
+}
+//------------------------------------------------------------------------------------
+//Paid amount of the user in each bill
+const paidByEachBill=(object)=>{
+average=averageOfEachBill(object) // Average Function
+for(i in object){
+object[i]=object[i]-average
 }
 return object
 }
-Bill_1=paid(Bill_1) // Paid Bill of First Bill
-Bill_2=paid(Bill_2) // Paid Bill of Second Bill
-Bill_3=paid(Bill_3) // Paid Bill of Third Bill
-d={}
-for (i in Bill_1 ){
-    d[i]=Bill_1[i]
+//------------------------------------------------------------------------------------
+// Paid by each Bill
+for(i in bills){
+    bills[i]=paidByEachBill(bills[i])
 }
-for(i in Bill_2){
-    if(i in d){
-        d[i]=d[i]+Bill_2[i]
+//------------------------------------------------------------------------------------
+settlement={}//Final Settlement Object
+for(i=0;i<bills.length;i++){
+for(e in bills[i]){
+    if(e in settlement){
+        settlement[e]=settlement[e]+bills[i][e]
     }
     else{
-        d[i]=Bill_2[i]
+        settlement[e]=bills[i][e]
     }}
-for(i in Bill_3){
-    if(i in d){
-        d[i]=d[i]+Bill_3[i]
-    }
-    else{
-        d[i]=Bill_3[i]
-    }}
-op={} // have to pay
-og={} // have to get
-for(i in d){
-    if(d[i]==0){
-        console.log(i+" no Need to pay")
-    }
-    else if(d[i]<0){
-        op[i]=d[i]
-    }
-    else if(d[i]>0){
-        og[i]=d[i]
-    }}
-// Sorting the object in ascending order
-const sort_a=(Object)=>{
-    l=[]
+}
+//------------------------------------------------------------------------------------
+personToPay={} // have to pay
+personToGet={} // have to get
+for(i in settlement){
+if(settlement[i]==0){
+    console.log(i+" no need to pay or get Amount...")  // no need to pay if settlement is zero
+}
+else if(settlement[i]<0){
+    personToPay[i]=settlement[i] // have to pay
+}
+else if(settlement[i]>0){
+    personToGet[i]=settlement[i]  // have to get
+}}
+//------------------------------------------------------------------------------------
+// Sorting the object 
+const objectSorting=(Object)=>{
+l=[]
 for(i in Object){
-    l.push(Object[i])
+l.push(Object[i])
 }
 function sort(a,b){
-    return a-b
+return a-b
 }
-l.sort(sort)
-s_o={}
+l.sort(sort) //sorted list
+sortedObject={}
 for (e of l){
-    for(i in Object){
-        if(Object[i]==e){
-            s_o[i]=e
-        }}}
-return(s_o)
-}
-// Sorting the object in Descending order
-const sort_d=(Object)=>{
-    l=[]
 for(i in Object){
-    l.push(Object[i])
+    if(Object[i]==e){
+        sortedObject[i]=e
+    }}}
+return(sortedObject)
+}
+//------------------------------------------------------------------------------------
+// Sorting the object in Reverse
+const objectSortingReverse=(Object)=>{
+l=[]
+for(i in Object){
+l.push(Object[i])
 }
 function sort(a,b){
-    return a-b
+return a-b
 }
 l.sort(sort)
-l.reverse()
-s_o={}
+l.reverse() //reverse the sorted list
+reverseSortedObject={}
 for (e of l){
-    for(i in Object){
-        if(Object[i]==e){
-            s_o[i]=e
-        }}}
-return(s_o)
+for(i in Object){
+    if(Object[i]==e){
+        reverseSortedObject[i]=e
+    }}}
+return(reverseSortedObject)
 }
-s_og=sort_d(og)
-s_op=sort_a(op)
-console.log("Payment have to Get:",s_og)
-console.log("Payment have to Pay:",s_op)
-const rz=(object)=>{
-    o={}
-    for(i in object){
-        if(object[i]!=0){
-            o[i]=object[i]
-        }}
-    return o
+//------------------------------------------------------------------------------------
+//Sorting the Object
+personToGet=objectSortingReverse(personToGet)
+personToPay=objectSorting(personToPay)
+console.log("Payment have to Get:",personToGet) // Who have to Get Amount
+console.log("Payment have to Pay:",personToPay) // Who have to Pay Amount
+//------------------------------------------------------------------------------------
+// Zero Remove function for Object
+const zeroRemove=(object)=>{
+zeroRemovedObject={}
+for(i in object){
+    if(object[i]!=0){
+        zeroRemovedObject[i]=object[i]
+    }}
+return zeroRemovedObject
 }
-for(g in s_og){
-    for(p in s_op){
-        if(s_og[g]>Math.abs(s_op[p])){
-            console.log(`${p} must host ${Math.abs(s_op[p])} rs/- to ${g}`)
-            s_og[g]=(s_og[g])-(Math.abs(s_op[p]))
-            s_op[p]=0
-            s_op=rz(s_op)
-        }
-        else if(s_og[g]<Math.abs(s_op[p])){
-            console.log(`${p} must host ${Math.abs(s_og[g])} rs/- to ${g}`)
-            s_op[p]=Math.floor((s_og[g]))-Math.floor(Math.abs(s_op[p]))
-            s_og[g]=0
-            s_og=rz(s_og)           
-        }
-        else if(s_og[g]==Math.abs(s_op[p])){
-            console.log(`${p} must host ${Math.abs(s_op[p])} rs/- to ${g}`)
-            s_og[g]=0
-            s_op[p]=0
-            s_og=rz(s_og)
-            s_op=rz(s_op)
-        }
+//------------------------------------------------------------------------------------
+// Settling the Amount
+for(p in personToPay){
+for(g in personToGet){
+    if(personToGet[g]>Math.abs(personToPay[p])){
+        console.log(`Amount, ${p} has to pay to ${g}  :  ${Math.abs(personToPay[p]).toFixed(2)} rs/-`)
+        personToGet[g]=(personToGet[g])-(Math.abs(personToPay[p]))
+        personToPay[p]=0
+        personToPay=zeroRemove(personToPay)
+    }
+    else if(personToGet[g]<Math.abs(personToPay[p])){
+        console.log(`Amount, ${p} has to pay to ${g}  :  ${Math.abs(personToGet[g]).toFixed(2)} rs/- `)
+        personToPay[p]=Math.floor((personToGet[g]))-Math.floor(Math.abs(personToPay[p]))
+        personToGet[g]=0
+        personToGet=zeroRemove(personToGet)           
+    }
+    else if(personToGet[g]==Math.abs(personToPay[p])){
+        console.log(`Amount, ${p} has to pay to ${g}  :  ${Math.abs(personToPay[p]).toFixed(2)} rs/- `)
+        personToGet[g]=0
+        personToPay[p]=0
+        personToGet=zeroRemove(personToGet)
+        personToPay=zeroRemove(personToPay)
     }
 }
+}
+//----------------- X ---------------- X --- Thank You --- X -------------------- X --------------------
